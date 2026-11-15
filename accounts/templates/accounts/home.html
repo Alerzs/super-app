@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}{% endblock %}
+{% block title %}{{ site_name }}{% endblock %}
+{% block content %}
+<div class="bg-[#f4f5f7] px-4 pt-4">
+  {% if user.is_authenticated %}
+    <p class="mb-2 text-sm font-semibold text-[#3a4150]">سلام{% if user.first_name %}، {{ user.first_name }}{% endif %}</p>
+  {% endif %}
+  <label class="relative block">
+    <span class="sr-only">جستجو در سرویس‌ها</span>
+    <input id="service-search" type="search" placeholder="جستجو در سرویس‌های کشتیار" class="h-12 w-full rounded-2xl border border-transparent bg-white pe-11 ps-4 text-sm text-[#20232a] outline-none placeholder:text-[#22a85a] focus:border-[#22a85a]">
+    <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#9aa1ab]" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16.5 20 20.5"/></svg>
+  </label>
+
+  <div id="banner-slider" class="relative mt-3" dir="ltr">
+    <div class="overflow-hidden rounded-2xl">
+      <div id="banner-track" class="flex" style="transition: transform 0.35s ease">
+        {% for app in linked_apps %}
+          <a href="#{{ app.slug }}" dir="rtl" class="flex items-center justify-between gap-3 overflow-hidden px-4 py-3 text-[#20232a]" style="flex: 0 0 100%; background-color: {{ app.banner_bg }}">
+            <span>
+              <span class="block text-base font-extrabold leading-7">{{ app.banner }}</span>
+              <span class="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold" style="color: {{ app.banner_ink }}">مشاهده {{ app.name }}</span>
+            </span>
+            {% with icon_path="icons/"|add:app.slug|add:".png" %}
+              <img src="{% static icon_path %}?v=2" alt="" class="h-16 w-16 shrink-0">
+            {% endwith %}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+    <button id="banner-prev" type="button" class="absolute right-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-transparent text-[#20232a] shadow-none transition hover:bg-white/90 hover:shadow" aria-label="اسلاید قبلی">
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+    <button id="banner-next" type="button" class="absolute left-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-transparent text-[#20232a] shadow-none transition hover:bg-white/90 hover:shadow" aria-label="اسلاید بعدی">
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <div id="banner-dots" class="mt-2 flex items-center justify-center gap-1.5" dir="rtl"></div>
+  </div>
+
+  <nav class="mt-3 grid grid-cols-6 gap-2.5" aria-label="خدمات کشتیار">
+    {% for app in linked_apps %}
+      <a href="{{ app.url }}" data-service="{{ app.name }}" target="_blank" rel="noopener noreferrer" class="theme-{{ app.slug }} {% if forloop.counter <= 3 %}col-span-2{% else %}col-span-3{% endif %} flex flex-col items-center rounded-2xl px-2 py-3 text-center shadow-[0_1px_2px_rgba(23,28,38,0.04)]">
+        {% with icon_path="icons/"|add:app.slug|add:".png" %}
+          <img src="{% static icon_path %}?v=2" alt="" class="{% if forloop.counter <= 3 %}h-16 w-16{% else %}h-12 w-12{% endif %}">
+        {% endwith %}
+        <span class="mt-2 text-[11px] font-semibold leading-4 text-[#3a4150]">{{ app.name }}</span>
+      </a>
+    {% endfor %}
+  </nav>
+</div>
+
+<div class="space-y-2 bg-[#f4f5f7] pt-2">
+  <section class="theme-sabzify px-3 py-4" aria-label="دسته‌بندی خدمات سبزیفای">
+    <h2 class="mb-3 flex items-center justify-center gap-1.5 text-[15px] font-extrabold leading-6 text-[#20232a]">
+      <span class="theme-mark h-2.5 w-2.5 shrink-0 rounded-[3px]" aria-hidden="true"></span>
+      خدمات فضای سبز با سبزیفای
+    </h2>
+    <div class="grid grid-cols-6 gap-x-1">
+      {% for item in sabzify_categories %}
+        <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center text-center">
+          <span class="theme-spot grid h-14 w-14 place-items-center rounded-full">
+            {% include "includes/category_icon.html" with icon=item.icon %}
+          </span>
+          <span class="mt-1.5 text-[11px] font-medium leading-4 text-[#686e7a]">{% for line in item.lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="theme-keshtdrip px-3 py-4" aria-label="دسته‌بندی محصولات کشت‌دریپ">
+    <h2 class="mb-3 flex items-center justify-center gap-1.5 text-[15px] font-extrabold leading-6 text-[#20232a]">
+      <span class="theme-mark h-2.5 w-2.5 shrink-0 rounded-[3px]" aria-hidden="true"></span>
+      لوازم آبیاری با کشت‌دریپ
+    </h2>
+    <div class="grid grid-cols-6 gap-x-1">
+      {% for item in keshtdrip_categories %}
+        <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center text-center">
+          <span class="theme-spot grid h-14 w-14 place-items-center rounded-full">
+            {% include "includes/category_icon.html" with icon=item.icon %}
+          </span>
+          <span class="mt-1.5 text-[11px] font-medium leading-4 text-[#686e7a]">{% for line in item.lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="theme-keshthamrah px-3 py-4" aria-label="دسته‌بندی خدمات کشت همراه">
+    <h2 class="mb-3 flex items-center justify-center gap-1.5 text-[15px] font-extrabold leading-6 text-[#20232a]">
+      <span class="theme-mark h-2.5 w-2.5 shrink-0 rounded-[3px]" aria-hidden="true"></span>
+      خدمات کشاورزی با کشت همراه
+    </h2>
+    <div class="grid grid-cols-6 gap-x-1">
+      {% for item in keshthamrah_categories %}
+        <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center text-center">
+          <span class="theme-spot grid h-14 w-14 place-items-center rounded-full">
+            {% include "includes/category_icon.html" with icon=item.icon %}
+          </span>
+          <span class="mt-1.5 text-[11px] font-medium leading-4 text-[#686e7a]">{% for line in item.lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<div class="space-y-2 bg-[#f4f5f7] pt-2">
+  <section class="theme-sabzify relative px-4 py-4" aria-label="کودهای سبزیفای">
+    <div class="mb-2 flex items-center justify-between">
+      <h2 class="text-sm font-extrabold text-[#20232a]">کودهای سبزیفای</h2>
+      <a href="{{ sabzify_shop_url }}" target="_blank" rel="noopener noreferrer" class="theme-link text-xs font-bold">مشاهده همه</a>
+    </div>
+    <div class="product-rail -mx-4 flex cursor-grab touch-pan-x select-none gap-2 overflow-x-auto px-4 pb-1 [&_img]:pointer-events-none" data-rail>
+      {% for product in sabzify_products %}
+        <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="flex w-[148px] shrink-0 flex-col rounded-2xl bg-white p-2 shadow-[0_1px_2px_rgba(23,28,38,0.04)]">
+          <span class="relative grid h-28 place-items-center overflow-hidden rounded-xl bg-white p-1.5">
+            <img src="{% static product.image %}" alt="" class="h-full max-h-full w-full min-h-0 min-w-0 max-w-full object-contain">
+            {% if product.badge %}
+              <span class="absolute left-1.5 top-1.5 rounded-md bg-[#2f9d55] px-1.5 py-0.5 text-[10px] font-bold text-white">{{ product.badge }}</span>
+            {% endif %}
+          </span>
+          <span class="mt-2 line-clamp-2 h-8 text-[11px] font-semibold leading-4 text-[#20232a]">{{ product.name }}</span>
+          <span class="mt-1 truncate text-[10px] text-[#5c6370]">{{ product.spec }}</span>
+          <span class="mt-1 flex items-baseline gap-1 whitespace-nowrap text-[11px] font-extrabold text-[#20232a]">{{ product.price }} <span class="text-[10px] font-semibold text-[#5c6370]">تومان</span></span>
+        </a>
+      {% endfor %}
+    </div>
+    <button type="button" data-rail-prev class="absolute right-0 top-[5.1rem] z-10 grid h-8 w-8 place-items-center rounded-full bg-transparent text-[#20232a] shadow-none transition hover:bg-white hover:shadow" aria-label="کودهای قبلی">
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+    <button type="button" data-rail-next class="absolute left-0 top-[5.1rem] z-10 grid h-8 w-8 place-items-center rounded-full bg-transparent text-[#20232a] shadow-none transition hover:bg-white hover:shadow" aria-label="کودهای بعدی">
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </section>
+
+  <section class="theme-keshtdrip relative px-4 py-4" aria-label="محصولات کشت‌دریپ">
+    <div class="mb-2 flex items-center justify-between">
+      <h2 class="text-sm font-extrabold text-[#20232a]">پربازدیدترین محصولات</h2>
+      <a href="{{ keshtdrip_shop_url }}" target="_blank" rel="noopener noreferrer" class="theme-link text-xs font-bold">مشاهده همه</a>
+    </div>
+    <div class="product-rail -mx-4 flex cursor-grab touch-pan-x select-none gap-2 overflow-x-auto px-4 pb-1 [&_img]:pointer-events-none" data-rail>
+      {% for product in keshtdrip_products %}
+        <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="flex w-[148px] shrink-0 flex-col rounded-2xl bg-white p-2 shadow-[0_1px_2px_rgba(23,28,38,0.04)]">
+          <span class="relative grid h-28 place-items-center overflow-hidden rounded-xl bg-white p-1.5">
+            <img src="{{ product.image }}" alt="" class="h-full max-h-full w-full min-h-0 min-w-0 max-w-full object-contain">
+            {% if product.badge %}
+              <span class="absolute left-1.5 top-1.5 rounded-md bg-[#0e8fbf] px-1.5 py-0.5 text-[10px] font-bold text-white">{{ product.badge }}</span>
+            {% endif %}
+          </span>
+          <span class="mt-2 line-clamp-2 h-8 text-[11px] font-semibold leading-4 text-[#20232a]">{{ product.name }}</span>
+          <span class="mt-1 truncate text-[10px] text-[#5c6370]">{{ product.spec }}</span>
+          <span class="mt-1 flex items-baseline gap-1 whitespace-nowrap text-[11px] font-extrabold text-[#20232a]">{{ product.price }} <span class="text-[10px] font-semibold text-[#5c6370]">تومان</span></span>
+        </a>
+      {% endfor %}
+    </div>
+    <button type="button" data-rail-prev class="absolute right-0 top-[5.1rem] z-10 grid h-8 w-8 place-items-center rounded-full bg-transparent text-[#20232a] shadow-none transition hover:bg-white hover:shadow" aria-label="محصولات قبلی">
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+    <button type="button" data-rail-next class="absolute left-0 top-[5.1rem] z-10 grid h-8 w-8 place-items-center rounded-full bg-transparent text-[#20232a] shadow-none transition hover:bg-white hover:shadow" aria-label="محصولات بعدی">
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </section>
+</div>
+
+<div id="services" class="space-y-3 bg-[#f4f5f7] px-4 pb-8 pt-2">
+  {% for app in linked_apps %}
+    <section id="{{ app.slug }}" data-service="{{ app.name }}" class="theme-{{ app.slug }} scroll-mt-4 rounded-2xl p-4">
+      <div class="flex items-center gap-3">
+        {% with icon_path="icons/"|add:app.slug|add:".png" %}
+          <img src="{% static icon_path %}?v=2" alt="" class="h-11 w-11 shrink-0">
+        {% endwith %}
+        <div>
+          <p class="text-xs font-semibold text-[#8b909a]">{{ app.kicker }}</p>
+          <h2 class="text-base font-extrabold leading-7">{{ app.title }}</h2>
+        </div>
+      </div>
+      <p class="mt-2 text-sm leading-7 text-[#5c6370]">{{ app.text }}</p>
+      {% if app.stats %}
+        <ul class="mt-3 grid grid-cols-3 gap-2">
+          {% for stat in app.stats %}
+            <li class="rounded-xl bg-white px-2 py-3 text-center">
+              <b class="block text-sm">{{ stat.value }}</b>
+              <span class="mt-1 block text-[11px] text-[#5c6370]">{{ stat.label }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% if app.steps %}
+        <ol class="mt-3 space-y-3">
+          {% for step in app.steps %}
+            <li class="flex gap-3">
+              <span class="theme-step grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold">{{ forloop.counter }}</span>
+              <span>
+                <span class="block text-sm font-bold">{{ step.title }}</span>
+                <span class="mt-0.5 block text-xs leading-6 text-[#5c6370]">{{ step.text }}</span>
+              </span>
+            </li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+      {% if app.chips %}
+        <ul class="mt-3 flex flex-wrap gap-2">
+          {% for chip in app.chips %}
+            <li class="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-[#2a2e36]">{{ chip }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <a class="theme-link mt-4 flex items-center justify-between text-sm font-bold" href="{{ app.url }}" target="_blank" rel="noopener noreferrer">
+        <span>ادامه در {{ app.name }}</span>
+        <span aria-hidden="true">←</span>
+      </a>
+    </section>
+  {% endfor %}
+</div>
+<script>
+  (function () {
+    var input = document.getElementById("service-search");
+    if (input) {
+      input.addEventListener("input", function () {
+        var query = input.value.trim();
+        document.querySelectorAll("[data-service]").forEach(function (node) {
+          var name = node.getAttribute("data-service") || "";
+          node.hidden = Boolean(query) && name.indexOf(query) === -1;
+        });
+      });
+    }
+
+    var track = document.getElementById("banner-track");
+    var dots = document.getElementById("banner-dots");
+    if (!track || !dots) return;
+    var slides = track.children;
+    var count = slides.length;
+    var index = 0;
+
+    function paint() {
+      track.style.transform = "translateX(" + (-index * 100) + "%)";
+      Array.prototype.forEach.call(dots.children, function (dot, dotIndex) {
+        dot.style.width = dotIndex === index ? "16px" : "6px";
+        dot.style.opacity = dotIndex === index ? "1" : "0.35";
+      });
+    }
+
+    function go(step) {
+      index = (index + step + count) % count;
+      paint();
+    }
+
+    for (var i = 0; i < count; i += 1) {
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "h-1.5 rounded-full bg-[#20232a]";
+      dot.style.width = "6px";
+      dot.setAttribute("aria-label", "اسلاید " + (i + 1));
+      dot.addEventListener("click", function (event) {
+        index = Array.prototype.indexOf.call(dots.children, event.currentTarget);
+        paint();
+      });
+      dots.appendChild(dot);
+    }
+
+    document.getElementById("banner-next").addEventListener("click", function () { go(1); });
+    document.getElementById("banner-prev").addEventListener("click", function () { go(-1); });
+
+    var startX = 0;
+    track.addEventListener("touchstart", function (event) {
+      startX = event.changedTouches[0].clientX;
+    }, { passive: true });
+    track.addEventListener("touchend", function (event) {
+      var delta = event.changedTouches[0].clientX - startX;
+      if (Math.abs(delta) < 40) return;
+      go(delta < 0 ? 1 : -1);
+    });
+
+    paint();
+
+    document.querySelectorAll("[data-rail]").forEach(function (rail) {
+      var section = rail.parentElement;
+      var railNext = section.querySelector("[data-rail-next]");
+      var railPrev = section.querySelector("[data-rail-prev]");
+      function railStep() {
+        return Math.max(rail.clientWidth * 0.72, 160);
+      }
+      if (railNext) {
+        railNext.addEventListener("click", function (event) {
+          event.preventDefault();
+          rail.scrollBy({ left: -railStep(), behavior: "smooth" });
+        });
+      }
+      if (railPrev) {
+        railPrev.addEventListener("click", function (event) {
+          event.preventDefault();
+          rail.scrollBy({ left: railStep(), behavior: "smooth" });
+        });
+      }
+
+      var dragging = false;
+      var dragged = false;
+      var dragX = 0;
+      var dragScroll = 0;
+      var pointerId = null;
+      function endDrag(event) {
+        if (!dragging) return;
+        if (event && pointerId != null && event.pointerId !== pointerId) return;
+        dragging = false;
+        pointerId = null;
+        rail.classList.remove("cursor-grabbing");
+        rail.classList.add("cursor-grab");
+      }
+      rail.addEventListener("pointerdown", function (event) {
+        if (event.pointerType === "touch") return;
+        if (event.button !== 0) return;
+        pointerId = event.pointerId;
+        dragging = true;
+        dragged = false;
+        dragX = event.clientX;
+        dragScroll = rail.scrollLeft;
+      });
+      window.addEventListener("pointermove", function (event) {
+        if (!dragging || event.pointerId !== pointerId) return;
+        var dx = event.clientX - dragX;
+        if (!dragged) {
+          if (Math.abs(dx) < 6) return;
+          dragged = true;
+          rail.classList.add("cursor-grabbing");
+          rail.classList.remove("cursor-grab");
+          try { rail.setPointerCapture(event.pointerId); } catch (err) {}
+        }
+        rail.scrollLeft = dragScroll - dx;
+      });
+      window.addEventListener("pointerup", endDrag);
+      window.addEventListener("pointercancel", endDrag);
+      rail.addEventListener("dragstart", function (event) { event.preventDefault(); }, true);
+      rail.addEventListener("click", function (event) {
+        if (!dragged) return;
+        event.preventDefault();
+        event.stopPropagation();
+        dragged = false;
+      }, true);
+    });
+  })();
+</script>
+{% endblock %}

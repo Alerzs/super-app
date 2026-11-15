@@ -1,0 +1,4 @@
+scripts/start.sh text eol=lf
+Procfile text eol=lf
+Dockerfile text eol=lf
+app.py text eol=lf

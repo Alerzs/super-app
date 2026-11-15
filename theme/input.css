@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@source "../templates/**/*.html";
+@source "../accounts/templates/**/*.html";
+
+@theme {
+  --font-sans: Vazirmatn, Tahoma, "Segoe UI", sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex h-12 items-center justify-center rounded-xl bg-[#22a85a] px-5 text-sm font-bold text-white;
+  }
+
+  .btn-secondary {
+    @apply inline-flex h-12 items-center justify-center rounded-xl border border-[#e6e8ee] bg-white px-5 text-sm font-bold text-[#20232a];
+  }
+
+  .field-input {
+    @apply h-12 w-full rounded-xl border border-[#e4e6eb] bg-white px-4 text-base text-[#20232a] outline-none transition placeholder:text-[#a0a6b0] focus:border-[#22a85a];
+  }
+
+  .card {
+    @apply rounded-2xl border border-[#eef0f3] bg-white;
+  }
+
+  .product-rail {
+    scrollbar-width: none;
+  }
+
+  .product-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .theme-sabzify { background-color: #eaf7ef; }
+  .theme-sabzify .theme-spot { background-color: #e4f6eb; }
+  .theme-sabzify .theme-mark { background-color: #2f9d55; }
+  .theme-sabzify .theme-link { color: #1a8a44; }
+  .theme-sabzify .theme-step { background-color: #d5f0df; color: #157a3e; }
+
+  .theme-keshtdrip { background-color: #e8f4fc; }
+  .theme-keshtdrip .theme-spot { background-color: #e3f3fb; }
+  .theme-keshtdrip .theme-mark { background-color: #0e8fbf; }
+  .theme-keshtdrip .theme-link { color: #0a6f96; }
+  .theme-keshtdrip .theme-step { background-color: #d2ebf8; color: #0a6f96; }
+
+  .theme-keshthamrah { background-color: #fff8e8; }
+  .theme-keshthamrah .theme-spot { background-color: #fff6e0; }
+  .theme-keshthamrah .theme-mark { background-color: #d4a017; }
+  .theme-keshthamrah .theme-link { color: #9a7012; }
+  .theme-keshthamrah .theme-step { background-color: #ffefc8; color: #8a6410; }
+
+  .theme-keshtsarmayeh { background-color: #f5f1fb; }
+  .theme-keshtsarmayeh .theme-spot { background-color: #e8e0f6; }
+  .theme-keshtsarmayeh .theme-mark { background-color: #6d56a8; }
+  .theme-keshtsarmayeh .theme-link { color: #6b4fa3; }
+  .theme-keshtsarmayeh .theme-step { background-color: #e8e0f6; color: #5c458f; }
+
+  .theme-keshtmosharekati { background-color: #fff3eb; }
+  .theme-keshtmosharekati .theme-spot { background-color: #ffe4d4; }
+  .theme-keshtmosharekati .theme-mark { background-color: #d06a3a; }
+  .theme-keshtmosharekati .theme-link { color: #c45c32; }
+  .theme-keshtmosharekati .theme-step { background-color: #ffe4d4; color: #b5522c; }
+
+  section.theme-sabzify.px-3,
+  section.theme-keshtdrip.px-3,
+  section.theme-keshthamrah.px-3 {
+    background-color: transparent;
+  }
+
+  nav .theme-sabzify { background-color: #d8f3e1; }
+  nav .theme-keshtdrip { background-color: #d4eefb; }
+  nav .theme-keshthamrah { background-color: #fff1c2; }
+  nav .theme-keshtsarmayeh { background-color: #ebe4f8; }
+  nav .theme-keshtmosharekati { background-color: #ffe6d6; }
+}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}حساب کاربری | {{ site_name }}{% endblock %}
+{% block content %}
+<section class="px-5 py-4">
+  <h1 class="text-2xl font-extrabold">حساب کاربری</h1>
+  <p class="mt-2 text-lg font-bold">{{ user.get_full_name|default:"بدون نام" }}</p>
+  <p class="mt-1 text-end text-sm text-[#686e7a]" dir="ltr">{{ user.phone }}</p>
+  <p class="mt-3 text-xs text-[#8b909a]">عضویت از {{ user.date_joined|date:"Y/m/d" }}</p>
+  <form class="mt-6 space-y-4" method="post">
+    {% csrf_token %}
+    {% include "includes/form_fields.html" %}
+    <button class="btn-primary w-full" type="submit">ذخیره</button>
+  </form>
+  <div class="mt-4 grid gap-2">
+    <a class="btn-secondary w-full" href="{% url 'password_change' %}">تغییر رمز عبور</a>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="w-full py-3 text-sm font-bold text-[#b42318]" type="submit">خروج</button>
+    </form>
+  </div>
+  <ul class="mt-6 divide-y divide-[#eef0f3] border-y border-[#eef0f3]">
+    {% for app in linked_apps %}
+      <li>
+        <a class="flex items-center justify-between py-2.5 text-sm font-semibold" href="{{ app.url }}" target="_blank" rel="noopener noreferrer">
+          <span class="flex items-center gap-3">
+            {% with icon_path="icons/"|add:app.slug|add:".png" %}
+              <img src="{% static icon_path %}?v=2" alt="" class="h-9 w-9">
+            {% endwith %}
+            {{ app.name }}
+          </span>
+          <span class="text-[#8b909a]" aria-hidden="true">←</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

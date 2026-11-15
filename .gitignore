@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+node_modules/
+.env
+.env.parspack
+staticfiles/
+
+# SQLite stays in DB/ next to manage.py. Ignore the database file, keep the folder.
+db.sqlite3
+db.sqlite3-journal
+DB/*
+!DB/.gitkeep
