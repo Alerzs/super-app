@@ -57,10 +57,10 @@ if not SECRET_KEY:
 
 DEBUG = env_bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env_csv('ALLOWED_HOSTS', '127.0.0.1,localhost,.liara.run,.liara.ir')
+ALLOWED_HOSTS = env_csv('ALLOWED_HOSTS')
 CSRF_TRUSTED_ORIGINS = [
     with_scheme(origin)
-    for origin in env_csv('CSRF_TRUSTED_ORIGINS', 'https://*.liara.run,https://*.liara.ir')
+    for origin in env_csv('CSRF_TRUSTED_ORIGINS')
 ]
 app_url = os.environ.get('APP_URL', '').strip().rstrip('/')
 if app_url:
@@ -204,10 +204,6 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 
@@ -257,6 +253,5 @@ LOGGING = {
 }
 
 
-# Project
 
 SITE_NAME = 'کشتیار'
